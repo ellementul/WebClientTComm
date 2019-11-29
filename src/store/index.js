@@ -11,13 +11,15 @@ export default new Vuex.Store({
 	state: {
 		catalogs: [
 			{
-				path: "./",
-				files: [{name: "File1", size: 0}, {name: "File2", size: 0}],
+				disk: "None",
+				path: "/",
+				files: [],
 				changed: []
 			},
 			{
-				path: "./",
-				files: [{name: "File3", size: 0}, {name: "File4", size: 0}],
+				disk: "None",
+				path: "/",
+				files: [],
 				changed: []
 			}
 		],
@@ -27,7 +29,7 @@ export default new Vuex.Store({
 		},
 		disks: {
 			"None": {
-				mount: "./",
+				mount: ".",
 				lastPath: ""
 			}
 		},
@@ -36,18 +38,30 @@ export default new Vuex.Store({
 
 	mutations: {
 
-		addCatalog({ catalogs }, pathCatalog) {
+		addDisks({ disks }, newDisks) {
+			newDisks.forEach((diskName) =>{
+				if(disks[diskName])
+					disks[diskName].mount = diskName + '/';
+				else
+					disks[diskName] = {
+						mount: diskName + '/',
+						lastPath: ""
+					};
+			});
+		},
+
+		addCatalog({ catalogs }, path) {
 			catalogs.push({
-				path: pathCatalog,
+				path: path,
 				files: [],
 				changed: []
 			});
 		},
 
-		updateCatalog({ catalogs }, pathCatalog, files) {
-			catalogs.filter(catalog => pathCatalog == catalog.path)
+		updateCatalog(state, { path, files }) {
+			state.catalogs.filter((catalog, index) => path == getCatalogFullPath(state, index))
 				.forEach(catalog => {
-					catalog.files = [...files];
+					catalog.files = files;
 
 					catalog.changed = catalog.changed.filter(filename => {
 						return !files.some(file => file.name == filename)
@@ -87,17 +101,30 @@ export default new Vuex.Store({
 	},
 
 	actions: {
+		getLocalDisks({ commit }) {
 
-		updateCatalog({ commit, state: { catalogs }}, idCatalog) {
-			let path = catalogs[idCatalog].path;
+			fs.getLocalDisks((disks) =>{
+				if(disks.error)
+					commit('setErrorMsg', disks);
+				else
+					commit('addDisks', disks);
+			})
+		},
+
+		updateCatalog({ commit, state }, idCatalog) {
+			let path = getCatalogFullPath(state, idCatalog);
 
 			fs.readDir(path, (msg) =>{
 				if(msg.content)
-					commit('updateCatalog', msg.path, msg.content);
+					commit('updateCatalog', {path: msg.path, files: msg.content});
 				else(msg.error)
-					commit('setErrorMsg', msg.error);
+					commit('setErrorMsg', msg);
 			})
 		}
+
+	},
+
+	getters: {
 
 	},
 
@@ -105,3 +132,12 @@ export default new Vuex.Store({
 	},
 	strict: debug
 })
+
+function getCatalogFullPath(state, idCatalog){
+	let catalog = state.catalogs[idCatalog];
+	return getFullPath(state.disks[catalog.disk].mount, catalog.path);
+}
+
+function getFullPath(disk, path){
+	return disk + '/' + path;
+}

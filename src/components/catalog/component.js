@@ -1,4 +1,5 @@
 import { mapState, mapActions } from 'vuex';
+import FullPath from '../path/component.vue'
 import File from '../file/component.vue'
 
 export default {
@@ -7,6 +8,7 @@ export default {
 		'idCatalog'
 	],
 	components: {
+		FullPath,
 		File
 	},
 

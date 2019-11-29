@@ -3,7 +3,7 @@ const url = "./files";
 
 export default {
 
-  getLocalDisks(path, fileName, callback) {
+  getLocalDisks(callback) {
     let req = {
       action: "GetDisks"
     };
@@ -76,10 +76,10 @@ export default {
 function postData(url, data, callback) {
   fetch(url, {
       method: 'POST',
+      mode: 'cors',
       headers: {
-        'Content-Type': 'application/json',
+          'Content-Type': 'application/json',
       },
-      mode: 'no-cors',
       body: JSON.stringify(data),
   })
   .then(res => res.ok ? res : Promise.reject("The server is not responding"))
