@@ -1,6 +1,6 @@
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 export default {
-	name: 'Path',
+	name: 'FullPath',
 	props: [
 		'idCatalog'
 	],
@@ -11,4 +11,19 @@ export default {
 			return catalogs[this.idCatalog].path;
 		}
 	}),
+
+	methods: {
+		...mapActions([
+			'getLocalDisks',
+			'updateCatalog',
+		]),
+
+		updatePath(){
+			
+		}
+	},
+
+	mounted: function () {
+		this.getLocalDisks();
+	},
 }

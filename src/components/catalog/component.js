@@ -25,7 +25,11 @@ export default {
 	methods: {
 		...mapActions([
 			'updateCatalog'
-		])
+		]),
+
+		openItem(file) {
+			this.$store.dispatch('openFile', {idCatalog: this.idCatalog, file: file})
+		}
 	},
 
 	mounted: function () {

@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" v-on:click="open">
 	<p class="name">{{ file.name }}</p>
 	<p class="size">{{ file.size }}</p>
   </div>

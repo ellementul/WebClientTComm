@@ -11,13 +11,13 @@ export default new Vuex.Store({
 	state: {
 		catalogs: [
 			{
-				disk: "None",
+				disk: "ServerRoot",
 				path: "/",
 				files: [],
 				changed: []
 			},
 			{
-				disk: "None",
+				disk: "ServerRoot",
 				path: "/",
 				files: [],
 				changed: []
@@ -28,7 +28,7 @@ export default new Vuex.Store({
 			target: null
 		},
 		disks: {
-			"None": {
+			"ServerRoot": {
 				mount: ".",
 				lastPath: ""
 			}
@@ -43,10 +43,10 @@ export default new Vuex.Store({
 				if(disks[diskName])
 					disks[diskName].mount = diskName + '/';
 				else
-					disks[diskName] = {
+					Vue.set(disks, diskName, {
 						mount: diskName + '/',
 						lastPath: ""
-					};
+					});
 			});
 		},
 
@@ -94,9 +94,13 @@ export default new Vuex.Store({
 				changedFiles.splice(index, 1);
 		},
 
+		replacePath({ catalogs }, { idCatalog, newPath }) {
+			catalogs[idCatalog].path = newPath;
+		},
+
 		setErrorMsg(state, msg) {
 			state.errorMsg = msg;
-		}
+		},
 		
 	},
 
@@ -108,6 +112,31 @@ export default new Vuex.Store({
 					commit('setErrorMsg', disks);
 				else
 					commit('addDisks', disks);
+			})
+		},
+
+		openFile({ dispatch, state}, { idCatalog, file }) {
+			
+			if(file.isDir){
+				dispatch('replacePathCatalog', {
+					idCatalog: idCatalog,
+					newPath: state.catalogs[idCatalog].path + file.name + '/',
+				});
+			}
+		},
+
+		replacePathCatalog({ commit, state }, { idCatalog, newPath }) {
+			let diskName = state.catalogs[idCatalog].disk;
+			let diskPath = state.disks[diskName].mount;
+			let fullPath = getFullPath(diskPath, newPath);
+
+			fs.readDir(fullPath, (msg) =>{
+				if(msg.content){
+					commit('replacePath', { idCatalog, newPath });
+					commit('updateCatalog', {path: msg.path, files: msg.content});
+				}
+				else(msg.error)
+					commit('setErrorMsg', msg);
 			})
 		},
 
@@ -139,5 +168,5 @@ function getCatalogFullPath(state, idCatalog){
 }
 
 function getFullPath(disk, path){
-	return disk + '/' + path;
+	return disk + '/' + path + '/';
 }
