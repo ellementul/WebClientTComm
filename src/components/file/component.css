@@ -1,0 +1,12 @@
+.container {
+	display: flex;
+	flex-flow: row; 
+}
+
+.name{
+	flex-grow: 2;
+}
+
+.size{
+	flex-grow: 1;
+}

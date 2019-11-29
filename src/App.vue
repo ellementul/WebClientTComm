@@ -1,7 +1,6 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <ul is=files-list v-bind:msg="mess"/>
+    <CatalogTabs />
   </div>
 </template>
 

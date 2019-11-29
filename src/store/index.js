@@ -12,7 +12,12 @@ export default new Vuex.Store({
 		catalogs: [
 			{
 				path: "./",
-				files: ["File", "NoFile"],
+				files: [{name: "File1", size: 0}, {name: "File2", size: 0}],
+				changed: []
+			},
+			{
+				path: "./",
+				files: [{name: "File3", size: 0}, {name: "File4", size: 0}],
 				changed: []
 			}
 		],
@@ -31,10 +36,10 @@ export default new Vuex.Store({
 
 	mutations: {
 
-		addCatalog({ catalogs }, pathCatalog, files) {
+		addCatalog({ catalogs }, pathCatalog) {
 			catalogs.push({
 				path: pathCatalog,
-				files: [...files],
+				files: [],
 				changed: []
 			});
 		},
@@ -83,24 +88,13 @@ export default new Vuex.Store({
 
 	actions: {
 
-		addCatalog({ commit }, path) {
-			fs.readDir(path, (msg) =>{
-				if(msg.content)
-					commit('addCatalog', msg.path, msg.content);
-
-				if(msg.error)
-					commit('setErrorMsg', msg.error);
-			})
-		},
-
 		updateCatalog({ commit, state: { catalogs }}, idCatalog) {
 			let path = catalogs[idCatalog].path;
 
 			fs.readDir(path, (msg) =>{
 				if(msg.content)
 					commit('updateCatalog', msg.path, msg.content);
-
-				if(msg.error)
+				else(msg.error)
 					commit('setErrorMsg', msg.error);
 			})
 		}
