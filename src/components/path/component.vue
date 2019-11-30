@@ -1,14 +1,16 @@
 <template>
-  <div class="container">
-    <select>
+  <div class="navigation">
+    <select class="disk" @change="setDisk">
       <option
         v-for="(disk, key) in disks" 
-        v-bind:key="key"
-        v-bind:value="key"
+        :key="key"
+        :value="key"
+        :selected="selectedDisk == key"
 
       >{{ key }}</option>
     </select>
-    <div>{{ path }}</div>
+    <div class="path">/{{ path }}</div>
+    <button class="escape-button" @click="escapeCatalog">↑</button>
   </div>
 </template>
 

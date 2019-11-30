@@ -1,4 +1,14 @@
-.container {
+.navigation {
 	display: flex;
-	flex-flow: row; 
+	flex-flow: row;
+
+	background: #B7E7E9;
+}
+
+.disk {
+	flex-grow: 0;
+}
+
+.path {
+	flex: 1;
 }

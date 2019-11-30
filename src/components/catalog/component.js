@@ -28,7 +28,7 @@ export default {
 		]),
 
 		openItem(file) {
-			this.$store.dispatch('openFile', {idCatalog: this.idCatalog, file: file})
+			this.$store.dispatch('open', {idCatalog: this.idCatalog, file: file})
 		}
 	},
 
