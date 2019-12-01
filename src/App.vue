@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <CatalogTabs />
+    <Actions />
   </div>
 </template>
 

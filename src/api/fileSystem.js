@@ -82,7 +82,7 @@ function postData(url, data, callback) {
       },
       body: JSON.stringify(data),
   })
-  .then(res => res.ok ? res : Promise.reject("The server is not responding"))
+  .then(res => res.ok ? res : Promise.reject({message: "The server is not responding"}))
   .then(res => res.json())
   .then(data => callback(data))
   .catch(error => callback({error: error.message}));

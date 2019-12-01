@@ -1,6 +1,6 @@
-import { mapState, mapActions } from 'vuex';
+import { mapActions } from 'vuex';
 import FullPath from '../path/component.vue'
-import File from '../file/component.vue'
+import Files from '../files/component.vue'
 
 export default {
 	name: 'Catalog',
@@ -9,27 +9,18 @@ export default {
 	],
 	components: {
 		FullPath,
-		File
+		Files,
 	},
-
-	data: function(){
-		return {};
-	},
-
-	computed: mapState({
-		files({ catalogs }){
-			return catalogs[this.idCatalog].files;
-		}
-	}),
 
 	methods: {
 		...mapActions([
-			'updateCatalog'
+			'updateCatalog',
 		]),
 
-		openItem(file) {
-			this.$store.dispatch('open', {idCatalog: this.idCatalog, file: file})
-		}
+		setSource() {
+			this.$store.commit('setSourcePath', this.idCatalog);
+			return true;
+		},
 	},
 
 	mounted: function () {

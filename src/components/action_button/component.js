@@ -1,7 +1,7 @@
 export default {
-	name: 'File',
+	name: 'ActionButton',
 	props: [
-		'file'
+		'title'
 	],
 	methods: {
 	}

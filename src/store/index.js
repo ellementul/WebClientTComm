@@ -59,6 +59,10 @@ export default new Vuex.Store({
 			disks[catalog.disk].lastPath = newPath;
 		},
 
+		setSourcePath(state, idCatalog) {
+			state.sourcePath = getCatalogFullPath(state, idCatalog);
+		},
+
 		setDisk({ catalogs, disks }, { nameDisk, idCatalog }){
 			if(!(nameDisk in state.disks))
 				nameDisk = defaultDisk;
@@ -78,14 +82,13 @@ export default new Vuex.Store({
 				})
 		},
 
-		changeFile({ catalogs }, idCatalog, filename) {
-			catalogs[idCatalog].changed.push(filename);
-		},
-
-		unchangeFile({ catalogs }, idCatalog, filename) {
+		switchChangedItem({ catalogs }, {idCatalog, idFile}) {
 			let changedFiles = catalogs[idCatalog].changed;
-			let index = changedFiles.indexOf(filename);
-			if(index != -1)
+			let index = changedFiles.indexOf(idFile);
+
+			if(index == -1)
+				changedFiles.push(idFile);
+			else
 				changedFiles.splice(index, 1);
 		},
 
@@ -148,7 +151,7 @@ export default new Vuex.Store({
 
 		updateCatalog({ commit, state }, idCatalog) {
 			let path = getCatalogFullPath(state, idCatalog);
-			commit('setErrorMsg', path);
+
 			fs.readDir(path, (msg) =>{
 				if(msg.content)
 					commit('updateCatalog', {path: msg.path, files: msg.content});
