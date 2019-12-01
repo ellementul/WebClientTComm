@@ -7,7 +7,10 @@ export default {
 		Catalog
 	},
 	computed: mapState({
-		catalogs: state => state.catalogs
-	})
+		catalogs: state => {
+			state.catalogs.forEach((catalog, index) => catalog.id = index)
+			return state.catalogs.filter(catalog => !catalog.notLoadingContent)
+		}
+	}),
 
 }

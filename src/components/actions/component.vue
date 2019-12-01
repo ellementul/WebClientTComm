@@ -1,8 +1,8 @@
 <template>
   <div class="actions-container">
-	<Button @click="copy" title="copy"/>
-	<Button @click="move" title="move"/>
-	<Button @click="remove" title="remove"/>
+	<Button @press="runAction" title="copy"/>
+	<Button @press="runAction" title="move"/>
+	<Button @press="runAction" title="remove"/>
   </div>
 </template>
 

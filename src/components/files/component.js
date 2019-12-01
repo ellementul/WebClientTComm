@@ -23,7 +23,7 @@ export default {
 	methods: {
 
 		openItem(index) {
-			this.$store.dispatch('open', {idCatalog: this.idCatalog, file: this.files[index]})
+			this.$store.dispatch('open', {idCatalog: this.idCatalog, file: this.files[index], isLoadingContent: true})
 			return true;
 		},
 

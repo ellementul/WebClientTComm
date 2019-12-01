@@ -1,0 +1,8 @@
+.target{
+	display: flex;
+	flex-flow: row; 
+
+	flex-grow: 1;
+
+	border: 1px solid grey;
+}

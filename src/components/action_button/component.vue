@@ -1,5 +1,10 @@
 <template>
-	<button class="action-button" :name="title">{{ title }}</button>
+	<button 
+		class="action-button" 
+		:name="title" 
+		@click="pressButton">
+			{{ title }}
+		</button>
 </template>
 
 <script src="./component.js"></script>

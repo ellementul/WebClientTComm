@@ -1,9 +1,9 @@
 <template>
   <div class="tabs-container">
 	<Catalog 
-		v-for="(catalog, index) in catalogs" 
-		v-bind:key="index" 
-		v-bind:id-catalog="index"
+		v-for="catalog in catalogs" 
+		v-bind:key="catalog.id" 
+		v-bind:id-catalog="catalog.id"
 	/>
   </div>
 </template>

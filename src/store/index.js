@@ -22,6 +22,13 @@ let state =  {
 			disk: defaultDisk,
 			path: [],
 			files: [],
+			changed: [],
+			notLoadingContent: true,
+		},
+		{
+			disk: defaultDisk,
+			path: [],
+			files: [],
 			changed: []
 		},
 		{
@@ -29,10 +36,12 @@ let state =  {
 			path: [],
 			files: [],
 			changed: []
-		}
+		},
+
 	],
-	sourcePath: "",
-	targetPath: "",
+	sourceCatalog: 0,
+	targetCatalog: 0,
+	currentAction: null,
 	errorMsg: ""
 };
 
@@ -60,15 +69,14 @@ export default new Vuex.Store({
 		},
 
 		setSourcePath(state, idCatalog) {
-			state.sourcePath = getCatalogFullPath(state, idCatalog);
+			state.sourceCatalog = idCatalog;
 		},
 
 		setDisk({ catalogs, disks }, { nameDisk, idCatalog }){
-			if(!(nameDisk in state.disks))
+			if(!(nameDisk in disks))
 				nameDisk = defaultDisk;
 
 			catalogs[idCatalog].disk = nameDisk;
-			catalogs[idCatalog].path = disks[nameDisk].lastPath;
 		},
 
 		updateCatalog(state, { path, files }) {
@@ -82,7 +90,17 @@ export default new Vuex.Store({
 				})
 		},
 
-		switchChangedItem({ catalogs }, {idCatalog, idFile}) {
+		copy(state, idCatalog){
+			state.currentAction = 'copy';
+			state.targetCatalog = idCatalog || state.targetCatalog
+		},
+
+		move(state, idCatalog){
+			state.currentAction = 'copy';
+			state.targetCatalog = idCatalog || state.targetCatalog
+		},
+
+		switchChangedItem({ catalogs }, { idCatalog, idFile }) {
 			let changedFiles = catalogs[idCatalog].changed;
 			let index = changedFiles.indexOf(idFile);
 
@@ -90,6 +108,11 @@ export default new Vuex.Store({
 				changedFiles.push(idFile);
 			else
 				changedFiles.splice(index, 1);
+		},
+
+		closeModal(state) {
+			state.currentAction = null;
+			state.isShowModal = false;
 		},
 
 		setErrorMsg(state, msg) {
@@ -113,39 +136,45 @@ export default new Vuex.Store({
 			
 			if(file.isDir){
 				dispatch('replacePathCatalog', {
-					idCatalog: idCatalog,
+					idCatalog,
 					newPath: [ ...state.catalogs[idCatalog].path, file.name],
 				});
 			}
 		},
 
-		escape({ dispatch, state}, { idCatalog }) {
+		escape({ dispatch, state}, idCatalog ) {
 			let path = [ ...state.catalogs[idCatalog].path];
 			path.pop();
 
 			dispatch('replacePathCatalog', {
-				idCatalog: idCatalog,
+				idCatalog,
 				newPath: path,
 			});
 		},
 
-		changeDisk({ dispatch, commit }, { nameDisk, idCatalog}) {
+		changeDisk({ dispatch, commit, state }, { nameDisk, idCatalog }) {
 			commit('setDisk', { nameDisk, idCatalog});
-			dispatch('updateCatalog',  idCatalog);
+			dispatch('replacePathCatalog', {
+				idCatalog,
+				newPath: state.disks[nameDisk].lastPath,
+			});
 		},
 
 		replacePathCatalog({ commit, state }, { idCatalog, newPath }) {
-			let diskName = state.catalogs[idCatalog].disk;
+			let catalog = state.catalogs[idCatalog];
+			let diskName = catalog.disk;
 			let diskPath = state.disks[diskName].mount;
 			let fullPath = getFullPath(diskPath, newPath);
 
 			fs.readDir(fullPath, (msg) =>{
-				if(msg.content){
-					commit('setPath', { idCatalog, newPath });
-					commit('updateCatalog', {path: msg.path, files: msg.content});
-				}
 				if(msg.error)
 					commit('setErrorMsg', {title: "Error set new path! ", error: msg.error});
+				else if(msg.content){
+					commit('setPath', { idCatalog, newPath });
+
+					if(!catalog.notLoadingContent)
+						commit('updateCatalog', {path: msg.path, files: msg.content});
+				}
 			})
 		},
 
@@ -158,7 +187,51 @@ export default new Vuex.Store({
 				if(msg.error)
 					commit('setErrorMsg', {title: "Error update new path!", error: msg.error});
 			})
-		}
+		},
+
+		copy({ dispatch, commit, state }){
+			let source = getCatalogFullPath(state, state.sourceCatalog);
+			let target = getCatalogFullPath(state, state.targetCatalog);
+			let changedFiles = state.catalogs[state.sourceCatalog].changed;
+			let files = state.catalogs[state.sourceCatalog].files;
+
+			changedFiles.forEach(idFile => fs.copy(source, target, files[idFile].name, (msg) =>{
+				if(msg.error)
+					commit('setErrorMsg', {title: "Error copping!", error: msg.error});
+
+				dispatch('updateCatalog', state.sourceCatalog);
+				dispatch('updateCatalog', state.targetCatalog);
+			}));
+		},
+
+		move({ dispatch, commit, state }){
+			let source = getCatalogFullPath(state, state.sourceCatalog);
+			let target = getCatalogFullPath(state, state.targetCatalog);
+			let changedFiles = state.catalogs[state.sourceCatalog].changed;
+			let files = state.catalogs[state.sourceCatalog].files;
+
+			changedFiles.forEach(idFile => fs.move(source, target, files[idFile].name, (msg) =>{
+				if(msg.error)
+					commit('setErrorMsg', {title: "Error moving!", error: msg.error});
+
+				dispatch('updateCatalog', state.sourceCatalog);
+				dispatch('updateCatalog', state.targetCatalog);
+			}));
+		},
+
+		remove({ dispatch, commit, state }){
+			let path = getCatalogFullPath(state, state.sourceCatalog);
+			let changedFiles = state.catalogs[state.sourceCatalog].changed;
+			let files = state.catalogs[state.sourceCatalog].files;
+			
+			changedFiles.forEach(idFile => fs.remove(path, files[idFile].name, (msg) =>{
+				if(msg.error)
+					commit('setErrorMsg', {title: "Error update new path!", error: msg.error});
+
+				dispatch('updateCatalog', state.sourceCatalog);
+				dispatch('updateCatalog', state.targetCatalog);
+			}));
+		},
 
 	},
 

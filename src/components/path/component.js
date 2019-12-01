@@ -2,14 +2,14 @@ import { mapState, mapActions } from 'vuex';
 export default {
 	name: 'FullPath',
 	props: [
-		'idCatalog'
+		'idCatalog',
 	],
 
 	computed: mapState({
 		disks: state => state.disks,
 
 		path({ catalogs }){
-			return catalogs[this.idCatalog].path.join('/');
+			return '/'+ catalogs[this.idCatalog].path.join('/') + '/';
 		},
 
 		selectedDisk({ catalogs }){
@@ -23,11 +23,19 @@ export default {
 		]),
 
 		setDisk(event) {
-			this.$store.dispatch('changeDisk', {idCatalog: this.idCatalog, nameDisk: event.target.value})
+			this.$store.dispatch('changeDisk', {
+				idCatalog: this.idCatalog, 
+				nameDisk: event.target.value})
+		},
+
+		changePath(event) {
+			this.$store.dispatch('replacePathCatalog', {
+				idCatalog: this.idCatalog, 
+				newPath: event.target.value.split('/').filter(name => name)})
 		},
 
 		escapeCatalog() {
-			this.$store.dispatch('escape', {idCatalog: this.idCatalog});
+			this.$store.dispatch('escape', this.idCatalog );
 		},
 	},
 

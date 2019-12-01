@@ -4,5 +4,8 @@ export default {
 		'title'
 	],
 	methods: {
+		pressButton() {
+			this.$emit('press', this.title);
+		}
 	}
 }

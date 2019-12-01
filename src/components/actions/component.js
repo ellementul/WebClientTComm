@@ -1,4 +1,4 @@
-import { mapActions } from 'vuex';
+import { mapMutations, mapActions } from 'vuex';
 import Button from '../action_button/component.vue'
 export default {
 	name: 'Actions',
@@ -7,10 +7,17 @@ export default {
 		Button
 	},
 	methods: {
-		...mapActions([
+		...mapMutations([
 			'move',
-			'copy',
+			'copy'
+		]),
+
+		...mapActions([
 			'remove'
 		]),
+
+		runAction(action) {
+			this[action]();
+		}
 	}
 }

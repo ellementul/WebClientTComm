@@ -9,7 +9,7 @@
 
       >{{ key }}</option>
     </select>
-    <div class="path">/{{ path }}</div>
+    <input class="path" :value="path" @input="changePath"/>
     <button class="escape-button" @click="escapeCatalog">↑</button>
   </div>
 </template>
