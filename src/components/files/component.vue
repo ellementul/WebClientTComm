@@ -1,6 +1,7 @@
 <template>
 		<ul class="catalog">
 			<li 
+				class="item"
 				v-for="(file, index) in files" 
 				:key="index"
 				:index="index"
