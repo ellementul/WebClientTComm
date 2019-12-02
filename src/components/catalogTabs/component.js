@@ -1,4 +1,3 @@
-import { mapState } from 'vuex';
 import Catalog from '../catalog/component.vue'
 
 export default {
@@ -6,11 +5,12 @@ export default {
 	components: {
 		Catalog
 	},
-	computed: mapState({
-		catalogs: state => {
-			state.catalogs.forEach((catalog, index) => catalog.id = index)
-			return state.catalogs.filter(catalog => !catalog.notLoadingContent)
+	computed: {
+		catalogs() {
+			let cats = this.$store.state.navigation.catalogs;
+			cats.forEach((catalog, index) => catalog.id = index);
+			return cats.filter(catalog => !catalog.notLoadingContent);
 		}
-	}),
+	},
 
 }

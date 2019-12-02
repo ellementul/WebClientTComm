@@ -6,13 +6,13 @@ export default {
 	],
 
 	computed: mapState({
-		disks: state => state.disks,
+		disks: state => state.navigation.disks,
 
-		path({ catalogs }){
+		path({ navigation: { catalogs } }){
 			return '/'+ catalogs[this.idCatalog].path.join('/') + '/';
 		},
 
-		selectedDisk({ catalogs }){
+		selectedDisk({ navigation: { catalogs } }){
 			return catalogs[this.idCatalog].disk;
 		}
 	}),

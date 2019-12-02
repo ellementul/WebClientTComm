@@ -10,7 +10,7 @@ export default {
 
 	computed: mapState({
 		idCatalog(state){
-			return state.targetCatalog;
+			return state.navigation.targetCatalog;
 		}
 	}),
 

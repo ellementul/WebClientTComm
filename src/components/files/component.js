@@ -11,11 +11,11 @@ export default {
 	},
 
 	computed: mapState({
-		files({ catalogs }){
+		files({ navigation: { catalogs } }){
 			return catalogs[this.idCatalog].files;
 		},
 
-		changedFiles({ catalogs }){
+		changedFiles({ navigation: { catalogs } }){
 			return catalogs[this.idCatalog].changed;
 		},
 	}),
