@@ -1,5 +1,5 @@
-.actions-container {
-	display: flex;
-	flex-flow: row; 
-	justify-content: space-around;
+
+
+.action-button {
+	font-size: 1.5em;
 }

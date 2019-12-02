@@ -1,4 +1,6 @@
 .tabs-container {
 	display: flex;
-	flex-flow: row; 
+	flex-flow: row;
+
+	max-height: 80vh; 
 }

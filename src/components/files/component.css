@@ -1,10 +1,10 @@
-.catalog{
+.files-container{
 	display: flex;
 	flex-flow: column; 
 
 	flex-grow: 1;
 
-	border: 1px solid grey;
+	overflow-y: auto;
 }
 
 .item{

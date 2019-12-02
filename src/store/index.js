@@ -25,17 +25,13 @@ export default new Vuex.Store({
 
 	mutations: {
 
-		copy(state, idCatalog){
+		copy(state){
 			state.currentAction = 'copy';
-			state.targetCatalog = idCatalog || state.targetCatalog
 		},
 
-		move(state, idCatalog){
-			state.currentAction = 'copy';
-			state.targetCatalog = idCatalog || state.targetCatalog
+		move(state){
+			state.currentAction = 'move';
 		},
-
-		
 
 		closeModal(state) {
 			state.currentAction = null;

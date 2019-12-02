@@ -1,5 +1,8 @@
 <template>
 	<div id="app">
+		<header class="title">
+			<h1>WebTComm</h1>
+		</header>
 		<Modal v-if="currentAction">
 			<template v-slot:header>
 				{{ currentAction }}

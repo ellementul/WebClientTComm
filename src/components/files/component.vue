@@ -1,5 +1,5 @@
 <template>
-		<ul class="catalog">
+		<ul class="files-container">
 			<li 
 				class="item"
 				v-for="(file, index) in files" 
