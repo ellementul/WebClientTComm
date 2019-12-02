@@ -1,24 +1,7 @@
-# client
+Веб аналог Total Commander(Учебный проект)
+=========================================
 
-## Project setup
-```
-npm install
-```
+Состоит из двух частей: серверного API для манипулирования файлами на сервере, и клиентской части которая выполнена в стиле Total Commander
+Данный репозиторий клиентская часть проекта.
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+Серверная часть: https://github.com/ellementul/WebTCommServer
